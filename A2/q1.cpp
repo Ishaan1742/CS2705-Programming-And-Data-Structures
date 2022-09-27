@@ -56,6 +56,36 @@ Node* create_tree_from_level_order(vector<int> a)
             i++;
         }
     }
+    //delete all nodes with INF
+    queue<Node*> q2;
+    q2.push(root);
+    while(!q2.empty())
+    {
+        Node* temp = q2.front();
+        q2.pop();
+        if(temp->left != NULL)
+        {
+            if(temp->left->data == INF)
+            {
+                temp->left = NULL;
+            }
+            else
+            {
+                q2.push(temp->left);
+            }
+        }
+        if(temp->right != NULL)
+        {
+            if(temp->right->data == INF)
+            {
+                temp->right = NULL;
+            }
+            else
+            {
+                q2.push(temp->right);
+            }
+        }
+    }
     return root;
 }
 
