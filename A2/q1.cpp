@@ -1,6 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+#define INF 1000000
+
 struct Node
 {
     int data;
@@ -32,6 +34,11 @@ Node* create_tree_from_level_order(vector<int> a)
                 temp->left = new Node(a[i]);
                 q.push(temp->left);
             }
+            else
+            {
+                temp->left = new Node(INF);
+                q.push(temp->left);
+            }
             i++;
         }
         if(i <= a.size())
@@ -41,35 +48,27 @@ Node* create_tree_from_level_order(vector<int> a)
                 temp->right = new Node(a[i]);
                 q.push(temp->right);
             }
+            else
+            {
+                temp->right = new Node(INF);
+                q.push(temp->right);
+            }
             i++;
         }
     }
     return root;
 }
 
-void print_level_order(Node* root)
-{
-    queue<Node*> q;
-    q.push(root);
-    while(!q.empty())
-    {
-        Node* temp = q.front();
-        q.pop();
-        cout << temp->data << " ";
-        if(temp->left)
-            q.push(temp->left);
-        if(temp->right)
-            q.push(temp->right);
-    }
-}
-
-void print_inorder(Node* root)
+int number_of_paths_with_sum(Node* root, int sum)
 {
     if(root == NULL)
-        return;
-    print_inorder(root->left);
-    cout << root->data << " ";
-    print_inorder(root->right);
+        return 0;
+    int count = 0;
+    if(root->data == sum && root->left == NULL && root->right == NULL)
+        count++;
+    count += number_of_paths_with_sum(root->left, sum - root->data);
+    count += number_of_paths_with_sum(root->right, sum - root->data);
+    return count;
 }
 
 
@@ -77,12 +76,18 @@ int main()
 {
     int n;
     cin >> n;
-    vector<int> a(n);
-    for(int i = 0; i < n; i++)
-        cin >> a[i];
+    vector<int> a;
+    for(int i=0; i<n; i++)
+    {
+        int x;
+        cin>>x;
+        a.push_back(x);
+        if(x == -1)
+            i--;
+    }
     Node* root = create_tree_from_level_order(a);
-    print_level_order(root);
-    cout << endl;
-    print_inorder(root);
+    int sum;
+    cin >> sum;
+    cout << number_of_paths_with_sum(root, sum) << endl;
     return 0;
 }
