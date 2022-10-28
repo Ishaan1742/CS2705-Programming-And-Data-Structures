@@ -3,39 +3,39 @@ using namespace std;
 
 int number_of_k_strangers(int n, int m, int k, vector<vector<int>> graph)
 {
-    //find all pair shortest path
-    vector<vector<int>> dist(n,vector<int>(n,INT_MAX));
-    for(int i=0;i<n;i++)
+    vector<vector<bool>> distance_more_than_k(n, vector<bool>(n, false));
+    //run bfs for each node and find the distance of each node from it
+    //if distance is more than k then mark it as true
+    for(int i = 0; i < n; i++)
     {
-        dist[i][i]=0;
-    }
-    for(int i=0;i<n;i++)
-    {
-        for(int j=0;j<graph[i].size();j++)
+        vector<bool> visited(n, false);
+        queue<pair<int, int>> q;
+        q.push({i, 0});
+        visited[i] = true;
+        while(!q.empty())
         {
-            dist[i][graph[i][j]]=1;
-        }
-    }
-    for(int k=0;k<n;k++) //Floyd Warshall Algorithm
-    {
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
+            pair<int, int> p = q.front();
+            q.pop();
+            if(p.second > k)
             {
-                if(dist[i][k]!=INT_MAX && dist[k][j]!=INT_MAX && dist[i][k]+dist[k][j]<dist[i][j])
+                distance_more_than_k[i][p.first] = true;
+            }
+            for(int j = 0; j < graph[p.first].size(); j++)
+            {
+                if(!visited[graph[p.first][j]])
                 {
-                    dist[i][j]=dist[i][k]+dist[k][j];
+                    q.push({graph[p.first][j], p.second + 1});
+                    visited[graph[p.first][j]] = true;
                 }
             }
         }
     }
-    //find number of k strangers
-    int count=0;
-    for(int i=0;i<n;i++)
+    int count = 0;
+    for(int i = 0; i < n; i++)
     {
-        for(int j=i+1;j<n;j++)
+        for(int j = i + 1; j < n; j++)
         {
-            if(dist[i][j]>k)
+            if(distance_more_than_k[i][j] && distance_more_than_k[j][i])
             {
                 count++;
             }
