@@ -13,7 +13,7 @@ void number_of_secure_rooms(int n, int m, vector<vector<int>> graph)
         }
     }
     //topological sort of reverse graph
-    vector<int> topological_sort;
+    vector<bool> topological_sort(n,false);
     vector<int> inDegree(n,0);
     for(int i=0;i<n;i++)
     {
@@ -34,7 +34,7 @@ void number_of_secure_rooms(int n, int m, vector<vector<int>> graph)
     {
         int node=q.front();
         q.pop();
-        topological_sort.push_back(node);
+        topological_sort[node]=true;
         for(int i=0;i<reverse_graph[node].size();i++)
         {
             inDegree[reverse_graph[node][i]]--;
@@ -44,13 +44,14 @@ void number_of_secure_rooms(int n, int m, vector<vector<int>> graph)
             }
         }
     }
-    //print topological sort in sorted order
-    sort(topological_sort.begin(),topological_sort.end());
-    for(int i=0;i<topological_sort.size();i++)
+    //print topological sort
+    for(int i=0;i<n;i++)
     {
-        cout<<topological_sort[i]<<" ";
+        if(topological_sort[i])
+        {
+            cout<<i<<" ";
+        }
     }
-    cout<<endl;
 }
 
 
